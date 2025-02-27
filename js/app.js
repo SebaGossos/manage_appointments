@@ -4,9 +4,11 @@ const propertyInput = document.getElementById('propietario');
 const emailInput = document.getElementById('email');
 const dateInput = document.getElementById('fecha');
 const symptomsInput = document.getElementById('sintomas');
+
 const form = document.getElementById('formulario-cita');
 
 const appointmentContainer = document.querySelector('#citas')
+
 
 // events
 patientInput.addEventListener('change', dataAppointment);
@@ -70,9 +72,7 @@ class AdminAppointments {
     };
 
     add(appointment) {
-        console.log( appointment )
         this.appointments.push(JSON.parse(JSON.stringify( appointment )));
-        console.log( this.appointments )
         this.show();
     }
 
@@ -109,8 +109,10 @@ class AdminAppointments {
 
 
             const btnEdit = document.createElement('button');
-            btnEdit.classList.add('py-2', 'px-10', 'bg-indigo-600', 'hover:bg-indigo-700', 'text-white', 'font-bold', 'uppercase', 'rounded-lg', 'flex', 'items-center', 'gap-2');
+            btnEdit.classList.add('py-2', 'px-10', 'bg-indigo-600', 'hover:bg-indigo-700', 'text-white', 'font-bold', 'uppercase', 'rounded-lg', 'flex', 'items-center', 'gap-2', 'boton-editar');
             btnEdit.innerHTML = 'Editar <svg fill="none" class="h-5 w-5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>'
+            const clone = structuredClone(appoint)
+            btnEdit.onclick = () => chargeEdition(clone);
 
             const btnDelet = document.createElement('button');
             btnDelet.classList.add('py-2', 'px-10', 'bg-red-600', 'hover:bg-red-700', 'text-white', 'font-bold', 'uppercase', 'rounded-lg', 'flex', 'items-center', 'gap-2');
@@ -162,8 +164,10 @@ function submitAppointment( e ) {
     })
 }
 
-
-
 function resetObjectAppointment() {
     Object.keys(appointmentObj).forEach( key => appointmentObj[key] = '');
+}
+
+function chargeEdition(appointment) {
+    console.log( appointment );
 }
