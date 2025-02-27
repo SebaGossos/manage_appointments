@@ -37,8 +37,7 @@ class Notify {
     }
 
     show() {
-        // clean previous elements
-        
+
         //Create Notification
         const alerts= document.createElement('div');
         alerts.classList.add('text-center', 'p-3', 'text-white', 'my-5', 'alert', 'uppercase', 'font-bold', 'text-sm')
@@ -63,9 +62,6 @@ class Notify {
         
     }
 
-    clear() {
-
-    }
 }
 
 class AdminAppointments {
@@ -74,7 +70,9 @@ class AdminAppointments {
     };
 
     add(appointment) {
-        this.appointments.push( appointment );
+        console.log( appointment )
+        this.appointments.push(JSON.parse(JSON.stringify( appointment )));
+        console.log( this.appointments )
         this.show();
     }
 
@@ -84,19 +82,39 @@ class AdminAppointments {
             appointmentContainer.removeChild(appointmentContainer.firstChild);
         }
         // generate appointments
-        this.appointments.forEach( appoint => {
+
+        this.appointments.forEach(appoint => {
             const appointmentDiv = document.createElement('div');
-            appointmentDiv.classList.add('mx-5', 'my-10', 'bg-white', 'shadow-md', 'px-5', 'py-10', 'rounded-xl')
-
+            appointmentDiv.classList.add('mx-5', 'my-10', 'bg-white', 'shadow-md', 'px-5', 'py-10' ,'rounded-xl', 'p-3');
+        
             const patient = document.createElement('p');
-            patient.classList.add('font-normal', 'mb-3', 'text-gray-700')
-            patient.innerHTML = `<span class="font-bold uppercase">Paciente: </span> ${appoint.patient}`
-
-            // inject HTML
-            appointmentDiv.appendChild( patient );
-
-            appointmentContainer.appendChild(appointmentDiv)
-        })
+            patient.classList.add('font-normal', 'mb-3', 'text-gray-700', 'normal-case')
+            patient.innerHTML = `<span class="font-bold uppercase">Paciente: </span> ${appoint.patient}`;
+        
+            const property = document.createElement('p');
+            property.classList.add('font-normal', 'mb-3', 'text-gray-700', 'normal-case')
+            property.innerHTML = `<span class="font-bold uppercase">Propietario: </span> ${appoint.property}`;
+        
+            const email = document.createElement('p');
+            email.classList.add('font-normal', 'mb-3', 'text-gray-700', 'normal-case')
+            email.innerHTML = `<span class="font-bold uppercase">E-mail: </span> ${appoint.email}`;
+        
+            const date = document.createElement('p');
+            date.classList.add('font-normal', 'mb-3', 'text-gray-700', 'normal-case')
+            date.innerHTML = `<span class="font-bold uppercase">Fecha: </span> ${appoint.date}`;
+        
+            const symptoms = document.createElement('p');
+            symptoms.classList.add('font-normal', 'mb-3', 'text-gray-700', 'normal-case')
+            symptoms.innerHTML = `<span class="font-bold uppercase">Síntomas: </span> ${appoint.symptoms}`;
+        
+            // Agregar al HTML
+            appointmentDiv.appendChild(patient);
+            appointmentDiv.appendChild(property);
+            appointmentDiv.appendChild(email);
+            appointmentDiv.appendChild(date);
+            appointmentDiv.appendChild(symptoms);
+            appointmentContainer.appendChild(appointmentDiv);
+        });
     }
 
 }
@@ -110,7 +128,6 @@ const appointments = new AdminAppointments()
 function submitAppointment( e ) {
     e.preventDefault();
     
-    const { patient, property, email, date, symptoms } = appointmentObj;
     const areEmpty = Object.values(appointmentObj).some( value => !value?.trim());
     if( areEmpty ){
         new Notify({
@@ -121,5 +138,16 @@ function submitAppointment( e ) {
     }
 
     appointments.add(appointmentObj)
+    form.reset()
+    resetObjectAppointment()
+    new Notify({
+        text: 'Registered patient',
+        type: 'success'
+    })
 }
-appointments.show()
+
+
+
+function resetObjectAppointment() {
+    Object.keys(appointmentObj).forEach( key => appointmentObj[key] = '');
+}
