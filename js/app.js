@@ -21,6 +21,7 @@ form.addEventListener('submit', submitAppointment)
 
 // object appointments
 const appointmentObj = {
+    id: generateId(),
     patient: '',
     property: '',
     email: '',
@@ -74,6 +75,8 @@ class AdminAppointments {
     add(appointment) {
         this.appointments.push(JSON.parse(JSON.stringify( appointment )));
         this.show();
+
+        console.log( this.appointments )
     }
 
     show() {
@@ -137,17 +140,19 @@ class AdminAppointments {
 
 }
 
+const appointments = new AdminAppointments()
 
 // functions
 function dataAppointment( e ) {
     appointmentObj[e.target.name] = e.target.value;
 }
-const appointments = new AdminAppointments()
+
 function submitAppointment( e ) {
     e.preventDefault();
-    
+
     const areEmpty = Object.values(appointmentObj).some( value => !value?.trim());
     if( areEmpty ){
+        console.log(appointmentObj)
         new Notify({
             text: 'all fields are required',
             type: 'error'
@@ -165,7 +170,15 @@ function submitAppointment( e ) {
 }
 
 function resetObjectAppointment() {
-    Object.keys(appointmentObj).forEach( key => appointmentObj[key] = '');
+    Object.keys(appointmentObj).forEach( key => {
+        // create an id so that it does not give an error that it is empty ''
+        if ( key === 'id' ) return appointmentObj[key] = generateId();
+        appointmentObj[key] = ''
+    });
+}
+
+function generateId() {
+    return Math.random().toString(36).substring(2) + Date.now();
 }
 
 function chargeEdition(appointment) {
