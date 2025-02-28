@@ -18,6 +18,7 @@ dateInput.addEventListener('change', dataAppointment);
 symptomsInput.addEventListener('change', dataAppointment);
 form.addEventListener('submit', submitAppointment)
 
+let edit = false;
 
 // object appointments
 const appointmentObj = {
@@ -71,12 +72,16 @@ class AdminAppointments {
     constructor(){
         this.appointments = [];
     };
-
+    
     add(appointment) {
         this.appointments.push(JSON.parse(JSON.stringify( appointment )));
         this.show();
+    }
 
-        console.log( this.appointments )
+    edit(appointment) {
+        const index = this.appointments.findIndex( appoint => appoint.id === appointment.id );
+        if ( index !== -1 ) this.appointments[index] = structuredClone(appointment);
+        this.show();
     }
 
     show() {
@@ -85,7 +90,6 @@ class AdminAppointments {
             appointmentContainer.removeChild(appointmentContainer.firstChild);
         }
         // generate appointments
-
         this.appointments.forEach(appoint => {
             const appointmentDiv = document.createElement('div');
             appointmentDiv.classList.add('mx-5', 'my-10', 'bg-white', 'shadow-md', 'px-5', 'py-10' ,'rounded-xl', 'p-3');
@@ -152,21 +156,31 @@ function submitAppointment( e ) {
 
     const areEmpty = Object.values(appointmentObj).some( value => !value?.trim());
     if( areEmpty ){
-        console.log(appointmentObj)
         new Notify({
             text: 'all fields are required',
             type: 'error'
         })
         return;
     }
-
-    appointments.add(appointmentObj)
+    
+    if( edit ) {
+        appointments.edit(appointmentObj);
+        new Notify({
+            text: 'Edited the patient',
+            type: 'success'
+        })
+        edit = false;
+    } else {
+        appointments.add(appointmentObj);
+        new Notify({
+            text: 'Registered patient',
+            type: 'success'
+        })
+    }
+    
     form.reset()
     resetObjectAppointment()
-    new Notify({
-        text: 'Registered patient',
-        type: 'success'
-    })
+
 }
 
 function resetObjectAppointment() {
@@ -182,5 +196,13 @@ function generateId() {
 }
 
 function chargeEdition(appointment) {
-    console.log( appointment );
+    Object.assign(appointmentObj, appointment)
+
+    patientInput.value = appointment.patient
+    propertyInput.value = appointment.property
+    emailInput.value = appointment.email
+    dateInput.value = appointment.date
+    symptomsInput.value = appointment.symptoms
+
+    edit = true;
 }
