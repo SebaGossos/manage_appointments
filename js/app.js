@@ -85,6 +85,12 @@ class AdminAppointments {
         this.show();
     }
 
+    delete( id ) {
+        const index = this.appointments.findIndex( appoint => appoint.id === id );
+        index !== -1 ? this.appointments.splice( index, 1 ) : null;
+        this.show()
+    }
+
     show() {
         // clean before HTML
         while( appointmentContainer.firstChild ) {
@@ -92,6 +98,8 @@ class AdminAppointments {
         }
         // generate appointments
         this.appointments.forEach(appoint => {
+            const cloneAppoint = structuredClone(appoint)
+
             const appointmentDiv = document.createElement('div');
             appointmentDiv.classList.add('mx-5', 'my-10', 'bg-white', 'shadow-md', 'px-5', 'py-10' ,'rounded-xl', 'p-3');
         
@@ -119,12 +127,12 @@ class AdminAppointments {
             const btnEdit = document.createElement('button');
             btnEdit.classList.add('py-2', 'px-10', 'bg-indigo-600', 'hover:bg-indigo-700', 'text-white', 'font-bold', 'uppercase', 'rounded-lg', 'flex', 'items-center', 'gap-2', 'boton-editar');
             btnEdit.innerHTML = 'Editar <svg fill="none" class="h-5 w-5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>'
-            const clone = structuredClone(appoint)
-            btnEdit.onclick = () => chargeEdition(clone);
-
+            btnEdit.onclick = () => chargeEdition(cloneAppoint);
+            
             const btnDelet = document.createElement('button');
             btnDelet.classList.add('py-2', 'px-10', 'bg-red-600', 'hover:bg-red-700', 'text-white', 'font-bold', 'uppercase', 'rounded-lg', 'flex', 'items-center', 'gap-2');
             btnDelet.innerHTML = 'Eliminar <svg fill="none" class="h-5 w-5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>'
+            btnDelet.onclick = () => deleteAppointment( cloneAppoint.id );
 
             const btnsContainer =  document.createElement('div');
             btnsContainer.classList.add('flex', 'justify-between', 'mt-10');
@@ -209,4 +217,8 @@ function chargeEdition(appointment) {
     formInput.value = 'GUARDAR CAMBIO'
 
     edit = true;
+}
+
+function deleteAppointment( id ) {
+    appointments.delete( id );
 }
