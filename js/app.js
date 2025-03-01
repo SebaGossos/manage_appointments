@@ -6,6 +6,7 @@ const dateInput = document.getElementById('fecha');
 const symptomsInput = document.getElementById('sintomas');
 
 const form = document.getElementById('formulario-cita');
+const formInput = document.querySelector('#formulario-cita input[type="submit"]')
 
 const appointmentContainer = document.querySelector('#citas')
 
@@ -78,9 +79,9 @@ class AdminAppointments {
         this.show();
     }
 
-    edit(appointment) {
-        const index = this.appointments.findIndex( appoint => appoint.id === appointment.id );
-        if ( index !== -1 ) this.appointments[index] = structuredClone(appointment);
+    edit(updateAppointment) {
+        const index = this.appointments.findIndex( appoint => appoint.id === updateAppointment.id );
+        if ( index !== -1 ) this.appointments[index] = structuredClone(updateAppointment);
         this.show();
     }
 
@@ -170,6 +171,7 @@ function submitAppointment( e ) {
             type: 'success'
         })
         edit = false;
+        formInput.value = 'REGISTRAR PACIENTE'
     } else {
         appointments.add(appointmentObj);
         new Notify({
@@ -203,6 +205,8 @@ function chargeEdition(appointment) {
     emailInput.value = appointment.email
     dateInput.value = appointment.date
     symptomsInput.value = appointment.symptoms
+
+    formInput.value = 'GUARDAR CAMBIO'
 
     edit = true;
 }
